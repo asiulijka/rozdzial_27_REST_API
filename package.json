@@ -4,5 +4,7 @@
     "express": "4.17.1",
     "uuid": "^8.3.2"
   },
-  "build": "cd client && yarn install && yarn build"
+  "scripts": {
+    "build": "cd client && yarn install && yarn build"
+  }
 }
