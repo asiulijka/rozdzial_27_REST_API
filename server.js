@@ -1,12 +1,34 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const socket = require('socket.io');
 
 const concertsRoutes = require('./routes/concerts.routes');
 const seatsRoutes = require('./routes/seats.routes');
 const testimonialsRoutes = require('./routes/testimonials.routes');
 
 const app = express();
+
+const server = app.listen(process.env.PORT || 8000, () => {
+  console.log('Server is running on port: 8000');
+});
+
+const io = socket(server);
+
+io.on('connection', (socket) => {
+  console.log('New socket!');
+});
+
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
+
+// const server = app.listen(8000, () => {
+//   console.log('Server is running on Port:', 8000)
+// });
+
+
 app.use(express.static(path.join(__dirname, '/public')));
 
 app.use(cors());
@@ -27,6 +49,3 @@ app.use((req, res) => {
   res.status(404).send({message: 'Not found...'});
 })
 
-app.listen(process.env.PORT || 8000, () => {
-  console.log('Server is running on port: 8000');
-});
