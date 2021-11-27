@@ -1,62 +1,13 @@
 const express = require('express');
-const db = require('../db');
-
 const router = express.Router();
-const { v4: uuidv4 } = require('uuid');
 
+const SeatController = require('../controllers/seats.controller');
 
-router.route('/seats').get((req, res) => {
-  res.send(db.seats);
-});
-
-router.route('/seats/:id').get((req, res) => {
-  if (req.params.id == 'random'){
-    const randomEl = Math.floor(Math.random() * db.seats.length);
-    res.send(db.seats[randomEl]);
-  } else {
-    const filterId = db.seats.filter(e => e.id == req.params.id)[0]; 
-    res.send(filterId ? filterId : {message: 'Not found...'});
-  };
-});
-
-router.route('/seats').post((req, res) => {
-  const {day , seat, client, email} = req.body;
-
-  if (db.seats.some(el => el.day === day && el.seat === seat)){
-    res.status(403).send({ message: "The slot is already taken..." });
-  } else {
-    db.seats.push({id: uuidv4(), day, seat, client, email });
-
-    req.io.emit('seatsUpdated', { seats: db.seats } );
-
-    res.send({message: 'OK'});
-  };
-});
-
-router.route('/seats/:id').put((req, res) => {
-  const {day , seat, client, email} = req.body;
-
-  db.seats = db.seats.map(obj => {
-    if (obj.id == req.params.id){
-      return {
-        id: obj.id,
-        day: day,
-        seat: seat,
-        client: client, 
-        email: email,
-      };
-    } else {
-      return obj;
-    };
-  });
-
-  res.send({message: 'OK'});
-});
-
-router.route('/seats/:id').delete((req, res) => {
-  db.seats = db.seats.filter(obj => obj.id != req.params.id);
-
-  res.send({message: 'OK'});
-});
+router.get('/seats', SeatController.getAll);
+router.get('/seats/random', SeatController.getRandom);
+router.get('/seats/:id', SeatController.getById);
+router.post('/seats', SeatController.postNew);
+router.put('/seats/:id', SeatController.putById);
+router.delete('/seats/:id', SeatController.deleteById);
 
 module.exports = router;
