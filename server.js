@@ -12,6 +12,8 @@ const app = express();
 
 
 
+// mongodb+srv://asiulijka:<password>@cluster0.uaxzb.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+
 
 const server = app.listen(process.env.PORT || 8000, () => {
   console.log('Server is running on port: 8000');
@@ -61,7 +63,8 @@ app.use((req, res) => {
 
 //Asi dodane 27.11
 // connects our backend code with the database
-mongoose.connect('mongodb://localhost:27017/NewWaveDB', { useNewUrlParser: true });
+// mongoose.connect('mongodb://localhost:27017/NewWaveDB', { useNewUrlParser: true });
+mongoose.connect('mongodb+srv://asiulijka:<WPISZ HASLO>@cluster0.uaxzb.mongodb.net/NewWaveDB?retryWrites=true&w=majority', { useNewUrlParser: true });
 const db = mongoose.connection;
 
 db.once('open', () => {
