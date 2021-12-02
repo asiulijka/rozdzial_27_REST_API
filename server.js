@@ -3,12 +3,15 @@ const cors = require('cors');
 const path = require('path');
 const socket = require('socket.io');
 const mongoose = require('mongoose');
+const helmet = require('helmet');
 
 const concertsRoutes = require('./routes/concerts.routes');
 const seatsRoutes = require('./routes/seats.routes');
 const testimonialsRoutes = require('./routes/testimonials.routes');
 
 const app = express();
+
+app.use(helmet());
 
 const server = app.listen(process.env.PORT || 8000, () => {
   console.log('Server is running on port: 8000');
@@ -46,7 +49,7 @@ app.use((req, res) => {
 const NODE_ENV = process.env.NODE_ENV;
 let dbUri = '';
 
-if(NODE_ENV === 'production') dbUri = 'mongodb+srv://asiulijka:<WPISZ_HASLO>@cluster0.uaxzb.mongodb.net/NewWaveDB?retryWrites=true&w=majority';
+if(NODE_ENV === 'production') dbUri = `mongodb+srv://asiulijka:${process.env.mongoDbPassword}@cluster0.uaxzb.mongodb.net/NewWaveDB?retryWrites=true&w=majority`;
 else if(NODE_ENV === 'test') dbUri = 'mongodb://localhost:27017/NewWaveDBtest';
 else dbUri = 'mongodb://localhost:27017/NewWaveDBdev';
 
